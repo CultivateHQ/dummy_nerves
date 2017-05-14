@@ -1,6 +1,6 @@
 defmodule Nerves.UART do
   @moduledoc """
-  Fake out Nerves.UART, mostly for testing.
+  Fake out Nerves.UART, mostly for unit testing.
 
   """
 
@@ -46,13 +46,12 @@ defmodule Nerves.UART do
   end
 
   def handle_call({:write, text}, _, s = %{written: written,
-                                           reactions: [{reaction_match, reaction_message}  | tail_reactions]}) do
-    cond do
-      text =~ reaction_match ->
-        send_to_client(reaction_message, s)
-        {:reply, :ok, %{s | written: [text | written], reactions: tail_reactions}}
-      true ->
-        {:reply, :ok, %{s | written: [text | written]}}
+                                           reactions: [{react_match, react_message}  | react_tail]}) do
+    if text =~ react_match do
+      send_to_client(react_message, s)
+      {:reply, :ok, %{s | written: [text | written], reactions: react_tail}}
+    else
+      {:reply, :ok, %{s | written: [text | written]}}
     end
   end
 

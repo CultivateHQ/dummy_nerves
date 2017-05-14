@@ -16,6 +16,13 @@ defmodule DummyNerves.Mixfile do
   end
 
   defp deps do
-    []
+    [] ++ lib_dev_deps(System.get_env("DUMMY_NERVES_DEV"))
   end
+
+  def lib_dev_deps("true") do
+    [
+      {:credo, "~> 0.7", only: [:dev, :test]},
+    ]
+  end
+  def lib_dev_deps(_), do: []
 end
