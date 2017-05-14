@@ -3,10 +3,23 @@ defmodule Nerves.UARTTest do
 
   alias Nerves.UART
 
-  setup do
+  setup ctx do
     {:ok, pid} = UART.start_link
-    UART.open(pid, "tty.something", active: true)
+    unless ctx[:skip_open] do
+      UART.open(pid, "tty.something", active: true)
+    end
     {:ok, pid: pid}
+  end
+
+  @tag skip_open: true
+  test "only supports active", %{pid: pid} do
+    assert {:error, :active_only_supported} == UART.open(pid, "tty.something", active: false)
+  end
+
+  @tag skip_open: true
+  test "not opened", %{pid: pid} do
+    assert {:error, :ebadf} == UART.write(pid, "hello")
+    assert {:error, :ebadf} == UART.pretend_to_receive(pid, "hello matey")
   end
 
   test "open when active", %{pid: pid} do

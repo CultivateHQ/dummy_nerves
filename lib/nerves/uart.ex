@@ -45,6 +45,8 @@ defmodule Nerves.UART do
     {:reply, :ok, %{s | port: port, client: from}}
   end
 
+  def handle_call(_, _, s = %{port: nil}), do: {:reply, {:error, :ebadf}, s}
+
   def handle_call({:write, text}, _, s = %{written: written,
                                            reactions: [{react_match, react_message}  | react_tail]}) do
     if text =~ react_match do
