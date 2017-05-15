@@ -17,3 +17,11 @@ def deps do
   [{:dummy_nerves, github: "CultivateHQ/dummy_nerves", only: [:dev, :test]}]
 end
 ```
+
+## Todo
+
+* Instructions in README
+* Configure what to compile in config
+* GPIO
+* SPI
+* Interim WiFi????
