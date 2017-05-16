@@ -64,11 +64,19 @@ defmodule Nerves.UART do
   When next something is written, which matches `match` respond as if `reaction_message` has just been received. Mimics command/response
   over the wire. The client process is sent a message in the form of `{:nerves_uart, port, msg}`.
 
-  Note that this is one-time only.
+  Note that reactions are ordered and one-time.
   """
   @spec react_to_next_matching_write(pid, String.t | Regex.t, String.t) :: :ok | {:error, :ebadf}
   def react_to_next_matching_write(pid, match, reaction_message) do
     GenServer.cast(pid, {:react_to_next_matching_write, match, reaction_message})
+  end
+
+  @doc """
+  Removes reactions set with `react_to_next_matching_write/3`
+  """
+  @spec reset_write_reactions(pid) :: :ok
+  def reset_write_reactions(pid) do
+    GenServer.cast(pid, :reset_write_reactions)
   end
 
   def handle_call({:open, port}, {from, _}, _) do
@@ -101,6 +109,8 @@ defmodule Nerves.UART do
   def handle_cast({:react_to_next_matching_write, match, reaction_message}, s = %{reactions: reactions}) do
     {:noreply, %{s | reactions: reactions ++ [{match, reaction_message}]}}
   end
+
+  def handle_cast(:reset_write_reactions, s), do: {:noreply, %{s | reactions: []}}
 
   defp send_to_client(msg, %{port: port, client: client}), do: send(client, {:nerves_uart, port, msg})
 end
