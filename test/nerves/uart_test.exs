@@ -57,4 +57,19 @@ defmodule Nerves.UARTTest do
 
     assert ["hi there", "hello", "hello"] == UART.written(pid)
   end
+
+  test "write with chained reaction", %{pid: pid} do
+    UART.react_to_next_matching_write(pid, "a", "1")
+    UART.react_to_next_matching_write(pid, "b", "2")
+    UART.react_to_next_matching_write(pid, "c", "3")
+
+    UART.write(pid, "a")
+    assert_receive {:nerves_uart, "tty.something", "1"}
+
+    UART.write(pid, "b")
+    assert_receive {:nerves_uart, "tty.something", "2"}
+
+    UART.write(pid, "c")
+    assert_receive {:nerves_uart, "tty.something", "3"}
+  end
 end

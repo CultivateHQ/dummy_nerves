@@ -99,7 +99,7 @@ defmodule Nerves.UART do
   end
 
   def handle_cast({:react_to_next_matching_write, match, reaction_message}, s = %{reactions: reactions}) do
-    {:noreply, %{s | reactions: [{match, reaction_message}, reactions]}}
+    {:noreply, %{s | reactions: reactions ++ [{match, reaction_message}]}}
   end
 
   defp send_to_client(msg, %{port: port, client: client}), do: send(client, {:nerves_uart, port, msg})
