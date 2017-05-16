@@ -73,11 +73,14 @@ defmodule Nerves.UARTTest do
     assert_receive {:nerves_uart, "tty.something", "3"}
   end
 
-  test "write reaction reset", %{pid: pid} do
+  test "reset", %{pid: pid} do
     UART.react_to_next_matching_write(pid, ~r/ll/, "surprise!")
-    UART.reset_write_reactions(pid)
 
+    UART.reset(pid)
     UART.write(pid, "hello")
     refute_receive {:nerves_uart, "tty.something", "surprise!"}
+
+    UART.reset(pid)
+    assert [] == UART.written(pid)
   end
 end

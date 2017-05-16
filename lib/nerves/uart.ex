@@ -72,11 +72,11 @@ defmodule Nerves.UART do
   end
 
   @doc """
-  Removes reactions set with `react_to_next_matching_write/3`
+  Removes reactions set with `react_to_next_matching_write/3` and also writes
   """
-  @spec reset_write_reactions(pid) :: :ok
-  def reset_write_reactions(pid) do
-    GenServer.cast(pid, :reset_write_reactions)
+  @spec reset(pid) :: :ok
+  def reset(pid) do
+    GenServer.cast(pid, :reset)
   end
 
   def handle_call({:open, port}, {from, _}, _) do
@@ -110,7 +110,7 @@ defmodule Nerves.UART do
     {:noreply, %{s | reactions: reactions ++ [{match, reaction_message}]}}
   end
 
-  def handle_cast(:reset_write_reactions, s), do: {:noreply, %{s | reactions: []}}
+  def handle_cast(:reset, s), do: {:noreply, %{s | reactions: [], written: []}}
 
   defp send_to_client(msg, %{port: port, client: client}), do: send(client, {:nerves_uart, port, msg})
 end
