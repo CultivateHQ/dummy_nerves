@@ -5,8 +5,7 @@ Help in the development and testing of [Nerves](https://github.com/nerves-projec
 
 ## Usage
 
-I'll totally document this later.
-
+I'll totally document this later. Honest.
 
 ## Installation
 
@@ -22,6 +21,3 @@ end
 
 * Instructions in README
 * Configure what to compile in config
-* GPIO
-* SPI
-* Interim WiFi????

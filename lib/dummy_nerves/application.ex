@@ -7,6 +7,7 @@ defmodule DummyNerves.Application do
     import Supervisor.Spec, warn: false
 
     children = [
+      supervisor(Registry, [:duplicate,  Nerves.Udhcpc]),
     ]
 
     opts = [strategy: :one_for_one, name: DummyNerves.Supervisor]
